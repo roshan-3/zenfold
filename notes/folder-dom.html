@@ -1,0 +1,118 @@
+<!--
+  Captured from Zen Browser via Browser Toolbox.
+  Workspace: {8b4d8ba9-5cee-4065-bc4d-460226112806}
+  Folders captured:
+    Test    id=1778651155346-32
+    Nested  id=1778651210249-8  (also appears inline as a child of Test)
+
+  NOTE: The "Test" dump below contains the complete "Nested" folder as a
+  descendant, so the separate "<!-- Nested -->" section is redundant and
+  was truncated by message limits when pasted. Test alone is sufficient.
+-->
+
+<!-- Test -->
+<zen-folder xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="1778651155346-32" label="Test" style="--tab-group-color: var(--tab-group-color-zen-workspace-color); --tab-group-color-invert: var(--tab-group-color-zen-workspace-color-invert); --tab-group-color-pale: var(--tab-group-color-zen-workspace-color-pale);" zen-workspace-id="{8b4d8ba9-5cee-4065-bc4d-460226112806}" hasmultipletabs="" hasactivetab="">
+  <hbox class="tab-group-label-container zen-drop-target" pack="center" context="zenFolderActions">
+    <html:div xmlns:html="http://www.w3.org/1999/xhtml" class="tab-group-folder-icon">
+      <svg width="28" height="28" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" state="open" active="false">
+        <!-- gradient defs + back/front folder paths + icon <g> + dots <g>; uses CSS vars:
+             --zen-folder-behind-bgcolor, --zen-folder-front-bgcolor, --zen-folder-stroke -->
+      </svg>
+    </html:div>
+    <label class="tab-group-label" role="button" aria-label="Test" aria-level="1" aria-expanded="true" aria-description="Test — Tab Group">Test</label>
+    <image class="tab-reset-button reset-icon" role="button" keyNav="false" data-l10n-id="zen-folders-unload-all-tooltip" tooltiptext="Unload active in this folder"/>
+  </hbox>
+  <html:div xmlns:html="http://www.w3.org/1999/xhtml" class="tab-group-container">
+    <html:div class="zen-tab-group-start" style="margin-top: 0px;"></html:div>
+
+    <!-- Empty/placeholder tab -->
+    <tab is="tabbrowser-tab" label="New Tab" class="tabbrowser-tab" fadein="true" zen-empty-tab="true" context="tabContextMenu" aria-level="1" pending="true" pinned="true" aria-posinset="1" aria-setsize="5" id="1778651155368-45">
+      <!-- standard tab subtree: tab-stack > tab-background, tab-content (icon, label, buttons) -->
+    </tab>
+
+    <!-- Real tab: currently selected/active -->
+    <tab is="tabbrowser-tab" label="hi - Google Search" class="tabbrowser-tab" fadein="true" zenDefaultUserContextId="true" context="tabContextMenu" aria-level="2" linkedpanel="panel-1-8" zen-workspace-id="{8b4d8ba9-5cee-4065-bc4d-460226112806}" id="1778651144426-98" pinned="true" aria-posinset="2" aria-setsize="5" visuallyselected="" selected="true" touchdownstartsdrag="true" image="data:image/png;base64,...">
+      <!-- selected="" on tab-background, tab-content, tab-icon-stack, etc. -->
+    </tab>
+
+    <!-- Another tab -->
+    <tab is="tabbrowser-tab" label="hi - Google Search" class="tabbrowser-tab" fadein="true" context="tabContextMenu" aria-level="2" linkedpanel="panel-1-7" zen-workspace-id="{8b4d8ba9-5cee-4065-bc4d-460226112806}" id="1778651142160-83" pinned="true" aria-posinset="3" aria-setsize="5" image="data:image/png;base64,...">
+    </tab>
+
+    <!-- Nested folder, sits inline among tabs -->
+    <zen-folder id="1778651210249-8" label="Nested" style="--tab-group-color: var(--tab-group-color-zen-workspace-color); --tab-group-color-invert: var(--tab-group-color-zen-workspace-color-invert); --tab-group-color-pale: var(--tab-group-color-zen-workspace-color-pale);" zen-workspace-id="{8b4d8ba9-5cee-4065-bc4d-460226112806}" hasmultipletabs="" collapsed="">
+      <hbox class="tab-group-label-container zen-drop-target" pack="center" context="zenFolderActions">
+        <html:div class="tab-group-folder-icon">
+          <svg state="close" active="false">
+            <!-- same folder SVG markup as parent, state="close" instead of "open" -->
+          </svg>
+        </html:div>
+        <label class="tab-group-label" role="button" aria-label="Nested" aria-level="1" aria-expanded="false" aria-description="Tabs list closed" aria-haspopup="menu">Nested</label>
+        <image class="tab-reset-button reset-icon" role="button" data-l10n-id="zen-folders-unload-all-tooltip" tooltiptext="Unload active in this folder"/>
+      </hbox>
+      <html:div class="tab-group-container">
+        <html:div class="zen-tab-group-start" style="margin-top: -44px;"></html:div>
+
+        <!-- aria-hidden="true" because the folder is collapsed -->
+        <tab is="tabbrowser-tab" label="New Tab" zen-empty-tab="true" pinned="true" aria-posinset="1" aria-setsize="2" id="1778651210272-55" aria-hidden="true">
+        </tab>
+        <tab is="tabbrowser-tab" label="hi - Google Search" pinned="true" aria-posinset="2" aria-setsize="2" id="1778651141164-77" zen-workspace-id="{8b4d8ba9-5cee-4065-bc4d-460226112806}" aria-hidden="true" last-tab-or-split-view="true" linkedpanel="panel-1-6">
+        </tab>
+      </html:div>
+      <vbox class="tab-group-overflow-count-container" pack="center">
+        <label class="tab-group-overflow-count" role="button" tooltiptext="1 more tab" aria-description="1 more tab">+1</label>
+      </vbox>
+    </zen-folder>
+  </html:div>
+  <vbox class="tab-group-overflow-count-container" pack="center">
+    <label class="tab-group-overflow-count" role="button" tooltiptext="4 more tabs" aria-description="4 more tabs">+4</label>
+  </vbox>
+</zen-folder>
+
+<!--
+  ============================================================
+  Key structural observations (extracted from raw capture):
+  ============================================================
+
+  Tag:        <zen-folder> in XUL namespace (http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul)
+  Element ID: timestamp-based, e.g. "1778651155346-32" — stable across sessions, safe to use as selector key
+
+  Attributes on <zen-folder>:
+    id                  unique stable folder ID
+    label               display name
+    zen-workspace-id    workspace UUID (so folders are workspace-scoped)
+    hasmultipletabs     present when folder has >1 tab
+    hasactivetab        present when one of the folder's tabs is currently active
+    collapsed           present when folder is closed (toggled by Zen on click)
+    style               injects --tab-group-color* CSS vars from workspace color
+    NO per-folder color attribute  — color comes from workspace, not the folder itself.
+                                     If we want per-folder coloring we add our own attr
+                                     (e.g. zenfold-color="hue") and override the vars.
+
+  Children structure:
+    <hbox class="tab-group-label-container zen-drop-target">       — clickable header
+      <html:div class="tab-group-folder-icon"> <svg state="open|close"> ...</svg> </html:div>
+      <label class="tab-group-label" aria-expanded="true|false">{label}</label>
+      <image class="tab-reset-button reset-icon">                  — "unload active" button
+    <html:div class="tab-group-container">                          — body, holds tabs + nested folders
+      <html:div class="zen-tab-group-start">                        — top spacer
+      <tab is="tabbrowser-tab" ...>                                 — flat list, no extra wrapper
+      <zen-folder ...>                                              — nested folders sit inline among tabs
+    <vbox class="tab-group-overflow-count-container">               — "+N more tabs" badge (when overflowing)
+      <label class="tab-group-overflow-count">+N</label>
+
+  Tabs inside folders:
+    - All carry pinned="true" (folders apparently group pinned tabs in Zen)
+    - When folder has collapsed="", child <tab>s get aria-hidden="true"
+    - selected/visuallyselected attributes mark the active tab
+
+  SVG folder icon:
+    - state attribute toggles open ("open") vs closed ("close") look
+    - active="true|false" likely tracks whether folder owns active tab
+    - Uses CSS vars: --zen-folder-behind-bgcolor, --zen-folder-front-bgcolor, --zen-folder-stroke
+    - <g class="icon"><image href=""> — empty href; this is the slot for a custom folder favicon
+
+  Workspace color binding:
+    style="--tab-group-color: var(--tab-group-color-zen-workspace-color); ..."
+    Three vars are bound to workspace colors. To override per-folder we just set these three on the element.
+-->

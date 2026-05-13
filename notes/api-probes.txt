@@ -1,0 +1,195 @@
+Zen Browser API surface probe — Phase 1 Step 3
+================================================
+
+App version:        1.19.12b
+App build ID:       20260507044029
+zen.version pref:   unset  (not maintained in this build — use Services.appinfo.version instead)
+
+Folder element
+--------------
+constructor.name:   nsZenFolder
+tagName:            zen-folder  (XUL namespace)
+
+Prototype methods (Object.getOwnPropertyNames of prototype):
+  activeGroups
+  activeTabs
+  addTabs                  ← function. addTab() does NOT exist.
+  allItems
+  allItemsRecursive
+  childActiveGroups
+  connectedCallback
+  constructor
+  createSubfolder          ← function. Use for nested folder creation.
+  delete                   ← function. Folder removal.
+  group
+  icon
+  iconURL
+  isZenFolder              ← likely getter / always true
+  on_click                 ← click handler; presumably toggles collapsed
+  pinned
+  rename                   ← function. Label change.
+  resetButton
+  rootMostCollapsedFolder
+  unloadAllTabs            ← function. Backs the reset-icon button.
+  unpackTabs               ← function. Probably "ungroup" — flatten folder.
+
+Method presence check:
+  addTabs:    function
+  addTab:     undefined        ← not exposed; use addTabs([tab])
+  collapse:   undefined        ← no method; toggle via `collapsed` attribute
+  expand:     undefined        ← no method; toggle via `collapsed` attribute
+
+gZenFolders (window-global)
+---------------------------
+typeof:                          object
+Members live on prototype (Object.getOwnPropertyNames() of instance returns []).
+
+Prototype methods:
+  _createFolderNode              internal node factory
+  animateCollapse                collapse animation
+  animateExpand                  expand animation
+  animateGroupMove               move animation
+  animateSelect                  selection animation
+  animateUnload                  per-tab unload animation
+  animateUnloadAll               full-folder unload animation
+  canDropElement                 DnD acceptance check
+  cancelPopupTimer               popup-on-hover timer cancel
+  changeFolderToSpace            convert folder into a workspace/space
+  changeFolderUserIcon           prompt-driven icon change
+  createFolder(tabs, options)    public entry — see signature below
+  handleEvent                    DOM event dispatcher
+  handleTabPin / handleTabUnpin  tab pin state hooks
+  highlightGroupOnDragOver       DnD visual feedback
+  init                           module init
+  on_FolderGrouped               folder placed inside another folder
+  on_FolderUngrouped             folder removed from a parent
+  on_TabGroupCollapse            folder collapsed
+  on_TabGroupCreate              folder created
+  on_TabGroupExpand              folder expanded
+  on_TabGrouped                  tab added to folder
+  on_TabUngrouped                tab removed from folder
+  on_TabOpen                     new tab opened
+  on_TabPinned / on_TabUnpinned  pin state events
+  on_TabSelect                   active tab changed
+  openTabsPopup                  popup shown for collapsed folder
+  restoreDataFromSessionStore    session restore — persistence hook
+  setFolderIndentation           nested folder indent control
+  setFolderUserIcon              direct icon setter
+  storeDataForSessionStore       session save — persistence hook
+  styleCleanup                   ?
+  ungroupTabsFromActiveGroups    bulk ungroup helper
+  updateFolderIcon(folder, mode) refresh icon ("auto" reads from tabs)
+
+createFolder full source:
+
+  createFolder(tabs = [], options = {}) {
+    const filteredTabs = tabs
+      .filter(tab => !tab.hasAttribute("zen-essential"))
+      .map(tab => {
+        gBrowser.pinTab(tab);
+        if (tab?.group?.hasAttribute("split-view-group")) {
+          tab = tab.group;
+        }
+        return tab;
+      });
+
+    const workspacePinned = gZenWorkspaces.workspaceElement(
+      options.workspaceId
+    )?.pinnedTabsContainer;
+    const pinnedContainer =
+      options.workspaceId && workspacePinned
+        ? workspacePinned
+        : gZenWorkspaces.pinnedTabsContainer;
+    const insertBefore =
+      options.insertBefore ||
+      pinnedContainer.querySelector(".pinned-tabs-container-separator");
+    const emptyTab = gBrowser.addTab("about:blank", {
+      skipAnimation: true,
+      pinned: true,
+      triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal(),
+      _forZenEmptyTab: true,
+      createLazyBrowser: true,
+    });
+
+    gBrowser.pinTab(emptyTab);
+    tabs = [emptyTab, ...filteredTabs];
+
+    const folder = this._createFolderNode(options);
+
+    if (options.insertAfter) {
+      options.insertAfter.after(folder);
+    } else {
+      insertBefore.before(folder);
+    }
+    gZenVerticalTabsManager.animateItemOpen(folder);
+
+    folder.addTabs(tabs);
+
+    // Fixes bug1953801 and bug1954689
+    // Ensure tab state cache update so group can be saved/closed reliably.
+    folder.tabs.forEach(tab => {
+      gBrowser.TabStateFlusher.flush(tab.linkedBrowser);
+    });
+
+    this.updateFolderIcon(folder, "auto");
+
+    if (options.renameFolder) {
+      folder.rename();
+    }
+
+    this.#groupInit(folder);
+    return folder;
+  }
+
+createFolder options:  { workspaceId?, insertBefore?, insertAfter?, renameFolder? }
+createFolder returns:  the new zen-folder element.
+
+Notes:
+- The leading about:blank "empty tab" is real, not a placeholder — it owns the folder's
+  pinned state. This matches the DOM where every folder shows a first <tab zen-empty-tab="true">.
+- folder.tabs is a live collection of contained tabs.
+- gZenVerticalTabsManager.animateItemOpen is the entry-into-DOM animation.
+- A private #groupInit(folder) is called at the end; we cannot call private methods directly.
+  If we need to recreate a folder programmatically we must use createFolder, not _createFolderNode.
+
+Tab / workspace traversal
+-------------------------
+gBrowser.selectedTab.group?.tagName            → "zen-folder"   (so tab.group is the folder element)
+gBrowser.selectedTab.closest("zen-folder")?.label → "Test"      (ancestor lookup works)
+
+gBrowser.selectedTab.group?.id                  → "1778651155346-32"  (== Test folder id; stable PK)
+typeof window.gZenWorkspaces                    → "object"
+window.gZenWorkspaces.activeWorkspace           → "{8b4d8ba9-5cee-4065-bc4d-460226112806}"
+                                                  (a UUID string, matches zen-workspace-id attribute)
+getComputedStyle(folder)["--zen-folder-indent"] → null
+                                                  (var NOT defined in this build; indent is plain CSS)
+
+High-leverage hook points
+-------------------------
+For an "enhance folders" mod, the highest-leverage hooks are:
+  - gZenFolders.updateFolderIcon         — to inject per-folder icon logic
+  - gZenFolders.setFolderUserIcon        — to set custom icon explicitly
+  - gZenFolders.on_TabGroupCreate        — to apply mod state to new folders
+  - gZenFolders.storeDataForSessionStore — to persist mod state
+  - gZenFolders.restoreDataFromSessionStore — to rehydrate mod state
+  - gZenFolders.animateCollapse / animateExpand — to alter animations
+  - nsZenFolder.prototype.on_click       — to alter click behavior
+  - nsZenFolder.prototype.rename         — to alter rename UX
+
+Implications for the mod
+------------------------
+- Selector for any folder:                zen-folder
+- Selector for collapsed folder:          zen-folder[collapsed]
+- Selector for folder owning active tab:  zen-folder[hasactivetab]
+- Selector by stable id:                  zen-folder#<id>
+- Selector scoped to workspace:           zen-folder[zen-workspace-id="<uuid>"]
+- To collapse/expand programmatically:    toggle the `collapsed` attribute (no method API).
+  Confirm whether on_click is the right entry point or whether attribute toggle is enough.
+- To add tabs to a folder:                folder.addTabs([tab, ...])
+- To create a subfolder:                  folder.createSubfolder(...)   — signature TBD
+- To rename:                              folder.rename(newLabel)        — signature TBD
+- To remove:                              folder.delete()                — destructive, confirm semantics
+- To unpack (flatten):                    folder.unpackTabs()
+- To unload contained tabs:               folder.unloadAllTabs()
+- Per-folder color override:              set style="--tab-group-color: ...; --tab-group-color-invert: ...; --tab-group-color-pale: ..."
+                                          (workspace-derived defaults can be replaced without touching workspace)
