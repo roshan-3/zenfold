@@ -6,3 +6,6 @@ Thumbs.db
 tests/visual/actual/
 tests/visual/diff/
 tests/compat/.zen-cache/
+
+# Transient scratch output from Browser Console probes.
+notes/probe-out.txt
