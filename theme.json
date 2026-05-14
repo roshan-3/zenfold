@@ -1,0 +1,17 @@
+{
+  "id": "zenfold",
+  "name": "Zenfold",
+  "description": "Folder-aware keyboard shortcuts for Zen Browser folders.",
+  "homepage": "https://github.com/roshan-3/zenfold",
+  "readme": "https://raw.githubusercontent.com/roshan-3/zenfold/main/README.md",
+  "preferences": "https://raw.githubusercontent.com/roshan-3/zenfold/main/preferences.json",
+  "scripts": {
+    "chrome/JS/zenfold.uc.mjs": {
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "author": "roshan-3",
+  "version": "0.1.0",
+  "tags": ["Zen Browser", "Tab Folders", "Keybinds"],
+  "fork": ["zen"]
+}
