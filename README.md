@@ -7,12 +7,14 @@ Status: v0.1 MVP. Tested against Zen 1.19.12b on Windows 11.
 
 ## Features
 
-- **`Ctrl+Shift+T`** — open a new pinned tab inside the currently active
-  folder. Rebindable from Zen's Keyboard Shortcuts settings page (look for
-  `key_zenfoldNewTabInFolder` / *Zenfold: New tab in current folder*).
-- **"Open in current folder"** — appears in the link right-click menu, right
-  under *Open Link in New Tab*. Visible only when the current tab is inside
-  a folder.
+- **`Ctrl+Alt+T`** opens a new pinned tab inside the currently active folder,
+  positioned immediately after the originating tab. Appears in Zen's Settings
+  page under Keyboard Shortcuts, Window And Tab Management group
+  (`key_zenfoldNewTabInFolder`), right below the *New Tab* row, and is
+  rebindable from there.
+- **"Open Link in current folder"** appears in the link right-click menu, just
+  under *Open Link in New Tab*. Visible only when the active tab is inside a
+  folder.
 
 Master toggle (`about:config`):
 
@@ -25,7 +27,7 @@ inside the chrome window, you need a userChrome.js loader. Zenfold targets
 [fx-autoconfig by MrOtherGuy](https://github.com/MrOtherGuy/fx-autoconfig).
 
 The official Zen Mods store does not execute JavaScript, only CSS. Zenfold is
-installed manually until/unless Zen ships a script-capable mod surface.
+installed manually until (or unless) Zen ships a script-capable mod surface.
 
 ## Install (Windows)
 
@@ -68,36 +70,49 @@ installed manually until/unless Zen ships a script-capable mod surface.
 
 ## Usage
 
-- **New tab in current folder:** focus a tab inside the folder you want,
-  press `Ctrl+Shift+T`. The new tab is pinned and inserted into the folder.
-- **Open link in current folder:** right-click any link on a page whose tab
-  is inside a folder, choose *Open in current folder*.
+- **New tab in current folder:** focus a tab inside the folder you want, press
+  `Ctrl+Alt+T`. The new tab is pinned and dropped into the folder right after
+  the tab you came from.
+- **Open Link in current folder:** right-click a link on a page whose tab is
+  inside a folder, choose *Open Link in current folder*.
+
+To rebind: open Zen Settings, go to Keyboard Shortcuts, find
+*cmd_zenfoldNewTabInFolder* in the *Window And Tab Management* group, and set
+your preferred combination.
 
 ## Uninstall
 
-Delete `<profile>\chrome\JS\zenfold*`, then restart Zen.
+1. Delete `<profile>\chrome\JS\zenfold*`.
+2. Remove the saved entry from `<profile>\zen-keyboard-shortcuts.json` (or
+   simply delete that file; Zen regenerates it on next launch).
+3. Restart Zen.
 
 ## Project layout
 
 ```
-theme.json              # Zen Mod manifest (kept for future script-capable mod surface)
+theme.json              # Zen Mod manifest (forward-compat with a script-capable mod surface)
 preferences.json        # Pref schema surfaced in Zen Mods UI
 chrome/
   JS/
     zenfold.uc.mjs      # fx-autoconfig entry point
     zenfold/
-      keybinds.mjs      # Ctrl+Shift+T -> new tab in folder
-      contextmenu.mjs   # "Open in current folder" link menu item
+      keybinds.mjs      # Ctrl+Alt+T -> new tab in current folder, registers with Zen Settings
+      contextmenu.mjs   # "Open Link in current folder" link menu item
       prefs.mjs         # about:config helpers
-notes/                  # Phase 1 discovery artifacts (DOM, API probes)
+notes/                  # Browser Console probes used during development
 ```
 
 ## Known limitations
 
-- Tested only against Zen 1.19.12b. Folder DOM/API may move in newer builds.
-- `Ctrl+Shift+T` is normally "reopen closed tab" in Firefox; Zenfold takes
-  over this binding window-wide. Rebind via Zen's Keyboard Shortcuts page,
-  or set `zenfold.keybinds.enabled` to `false` to restore the default.
+- Tested only against Zen 1.19.12b. The folder DOM/API and the keyboard
+  shortcuts manager surface may shift in newer builds.
+- The shortcut entry is rendered with its raw action id
+  (`cmd_zenfoldNewTabInFolder`) in Settings because Zenfold does not ship a
+  Fluent localization string. Functional, just not pretty.
+- Each window imports Zen's keyboard shortcuts module separately and keeps
+  its own list, so Zenfold persists its entry to
+  `<profile>\zen-keyboard-shortcuts.json` to make it visible to the Settings
+  page. This means the entry is durable across restarts.
 
 ## License
 
