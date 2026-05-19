@@ -1,0 +1,5 @@
+now selected url: about:newtab
+now selected pinned: true
+now selected.group: 1778617059894-92
+total tabs: 30
+pinned tabs: 26
